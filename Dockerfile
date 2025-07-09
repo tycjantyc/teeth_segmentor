@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 COPY . /app
 
 RUN pip install --upgrade pip
-RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 RUN pip install -r requirements.txt
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 
 CMD ["python", "toothfairy_train.py"]
