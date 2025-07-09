@@ -20,7 +20,7 @@ def prepare_toothfairy(image: np.ndarray,
         assert image.shape == mask.shape
 
         image, mask = create_random_snippet(image, mask, input_size)
-        
+
         mask = compression_function(mask)
         image = normalization_function(image)
 

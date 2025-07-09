@@ -18,7 +18,7 @@ def choose_filter(volume: np.ndarray, channels) -> np.ndarray:
         return norm(sobel_3d).astype(np.float32)
 
     # Channel 2: CLAHE (per depth slice)
-    if 'clahe' in channels:
+    elif 'clahe' in channels:
         clahe_input = cv2.normalize(volume, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
         clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
         clahe_volume = np.zeros_like(volume)
@@ -29,9 +29,12 @@ def choose_filter(volume: np.ndarray, channels) -> np.ndarray:
         return norm(clahe_volume).astype(np.float32)
 
     # Channel 3: Median filter
-    if 'median' in channels:
+    elif 'median' in channels:
         filtered = median_filter(volume, size=3)
         return norm(filtered).astype(np.float32)
+    
+    else:
+        raise ValueError('There is no such channel!')
 
 
 class MultiInputFactory():

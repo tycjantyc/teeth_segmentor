@@ -1,7 +1,5 @@
-import os
 from torch.utils.data import DataLoader
 from torch.optim import AdamW, Adam
-from diffusers import DDPMScheduler
 from diffusers.optimization import get_cosine_schedule_with_warmup
 from datasets.tooth_fairy_3_dataset import ToothFairy3_Dataset
 from models.tooth_fairy_1 import build_hyspark_tooth_fairy_1
@@ -24,6 +22,11 @@ def main(data_path = 'D:/ToothFairy3',
          freeze = False,        # for the pretrained encoder to be frozen
          channels = ['sobel'],  # Choose from: 'sobel', 'clahe', 'median'
          validation_split = 0.05): 
+
+    if channels is None:
+        channels = []
+        
+    print(f"Learning parameters: \n Data path: {data_path}\n Batch size: {batch_size}\n Compression: {compression}\n Normalization: {normalization}\n Augmentation: {augmentation}\n Learning rate: {learning_rate}\n Weight decay: {weight_decay}\n Number of epochs: {num_epochs}\n Freeze pretrainied layers: {freeze}\n Channels: {channels}")
 
     comp_func, num_classes = compression_factory(compression)
     norm_func = norm_factory(normalization)
@@ -56,7 +59,7 @@ if __name__ == '__main__':
     arg_parser.add_argument('--batch_size', type=int, required=False, default=1)
     arg_parser.add_argument('--compression', type=str, required=False, default='big', choices=['big', 'medium', 'none'])
     arg_parser.add_argument('--normalization', type=str, required=False, default='01', choices=['standard', '01', 'none'])
-    arg_parser.add_argument('--channels', type=list, required=False, default=['sobel'])
+    arg_parser.add_argument('--channels', nargs='+', type=str, required=False)
     arg_parser.add_argument('--augmentation', type=bool, required=False, default=True)
     arg_parser.add_argument('--freeze', type=bool, required=False, default=False)
     args = arg_parser.parse_args()

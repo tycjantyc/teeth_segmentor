@@ -69,6 +69,8 @@ class ToothFairy3_Dataset(Dataset):
         image = load_itk(path_cbct, clamp = self.clamp)
         mask = load_itk(path_label)
 
+        assert image.shape == mask.shape
+
         image = self.normalization(image)
         image, mask = prepare_toothfairy(image, mask, self.remove_ct_rings, self.input_size, self.compression_function, self.normalization, self.augmentation, self.channels)
 
