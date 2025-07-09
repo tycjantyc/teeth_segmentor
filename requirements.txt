@@ -1,0 +1,13 @@
+torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+tqdm
+numpy
+monai
+timm
+numpy
+accelerate
+diffusers
+simpleitk
+torchio
+scipy
+opencv-python
+skimage
