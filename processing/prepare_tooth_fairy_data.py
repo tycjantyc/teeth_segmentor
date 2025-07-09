@@ -7,8 +7,8 @@ def prepare_toothfairy(image: np.ndarray,
                        mask: np.ndarray, 
                        remove_ct_rings:bool, 
                        input_size: tuple[int, int, int], 
-                       compression_function: function, 
-                       normalization_function: function, 
+                       compression_function, 
+                       normalization_function, 
                        augmentation:bool, 
                        channels:list):
     

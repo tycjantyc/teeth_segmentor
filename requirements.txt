@@ -10,3 +10,5 @@ torchio
 scipy
 opencv-python
 scikit-image
+torchviz 
+graphviz
