@@ -9,7 +9,7 @@ from monai.losses import DiceFocalLoss
 
 def train_tooth_fairy(model, optimizer, train_dataloader, val_dataloader, lr_scheduler, num_epochs):
 
-    CRITERION = DiceFocalLoss(include_background=False, sigmoid=True, lambda_dice=1.0, lambda_focal=0.0)
+    CRITERION = DiceFocalLoss(include_background=False, sigmoid=True, lambda_dice=1.0, lambda_focal=1.0)
 
     DEVICE = 'cuda:0'
 
@@ -82,13 +82,19 @@ def train_tooth_fairy(model, optimizer, train_dataloader, val_dataloader, lr_sch
             clean_images = clean_images.to(DEVICE)
             clean_label = clean_label.to(DEVICE)
 
-            print(clean_images.size())
-            print(clean_label.size())
-
             with accelerator.accumulate(model):
                 label_pred = model(clean_images)
+
+                if tc.isnan(label_pred):
+                    print("Model reutrned NaN! Abort!")
+                    break
+
                 loss = CRITERION(label_pred, clean_label)
                 
+                if tc.isnan(loss.item()):
+                    print("Loss reutrned NaN! Abort!")
+                    break
+
             loss_val_full += loss.item()
 
         if len(val_dataloader) > 0:

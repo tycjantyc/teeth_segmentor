@@ -11,9 +11,9 @@ import argparse
 def main(data_path = 'D:/ToothFairy3', 
          batch_size = 1, 
          min_clamp = -1000, 
-         max_clamp = 3000, 
+         max_clamp = 4000, 
          compression = 'big',  #'big' - 3 classes, 'medium' - 8 classes, 'none' - 77 classes
-         normalization = '01', #'standard', '01', 'none'
+         normalization = 'none', #'standard', '01', 'none'
          augmentation = True, 
          learning_rate = 1e-2, 
          weight_decay = 1e-5, 
@@ -21,12 +21,18 @@ def main(data_path = 'D:/ToothFairy3',
          lr_warmup_steps = 40,
          freeze = False,        # for the pretrained encoder to be frozen
          channels = ['sobel'],  # Choose from: 'sobel', 'clahe', 'median'
-         validation_split = 0.05): 
+         validation_split = 0.05,
+         num_workers = 0,
+         pin_memory = False,
+         prefetch_factor = None): 
 
     if channels is None:
         channels = []
+
+    if prefetch_factor == 0:
+        prefetch_factor = None
         
-    print(f"Learning parameters: \n Data path: {data_path}\n Batch size: {batch_size}\n Compression: {compression}\n Normalization: {normalization}\n Augmentation: {augmentation}\n Learning rate: {learning_rate}\n Weight decay: {weight_decay}\n Number of epochs: {num_epochs}\n Freeze pretrainied layers: {freeze}\n Channels: {channels}")
+    print(f"Learning parameters: \n Data path: {data_path}\n Batch size: {batch_size}\n Compression: {compression}\n Normalization: {normalization}\n Augmentation: {augmentation}\n Learning rate: {learning_rate}\n Weight decay: {weight_decay}\n Number of epochs: {num_epochs}\n Freeze pretrainied layers: {freeze}\n Channels: {channels}\n Number of workers: {num_workers}")
 
     comp_func, num_classes = compression_factory(compression)
     norm_func = norm_factory(normalization)
@@ -34,7 +40,7 @@ def main(data_path = 'D:/ToothFairy3',
     dataset_train = ToothFairy3_Dataset(data_directory=data_path, input_size=(96, 96, 96), remove_ct_rings=False, clamp = (min_clamp, max_clamp), compression_function = comp_func, normalization=norm_func,augmentation=augmentation, channels=channels, validation_split=validation_split)
     dataset_val = ToothFairy3_Dataset(data_directory=data_path, input_size=(96, 96, 96), remove_ct_rings=False, clamp = (min_clamp, max_clamp), compression_function = comp_func, normalization=norm_func, augmentation=False, channels=channels, validation_split=validation_split, validation_mode=True)
     
-    train_dataloader = DataLoader(dataset_train, batch_size=batch_size, shuffle=True, num_workers=1, pin_memory=False, prefetch_factor=None)
+    train_dataloader = DataLoader(dataset_train, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=pin_memory, prefetch_factor=prefetch_factor)
     val_dataloader = DataLoader(dataset_val, batch_size=batch_size, shuffle=False, num_workers=1, pin_memory=False, prefetch_factor=None)
 
     inchannels = 1 + len(channels)
@@ -58,10 +64,14 @@ if __name__ == '__main__':
     arg_parser.add_argument('--weight_decay', type=float, required=False, default=1e-6)
     arg_parser.add_argument('--batch_size', type=int, required=False, default=1)
     arg_parser.add_argument('--compression', type=str, required=False, default='big', choices=['big', 'medium', 'none'])
-    arg_parser.add_argument('--normalization', type=str, required=False, default='01', choices=['standard', '01', 'none'])
+    arg_parser.add_argument('--normalization', type=str, required=False, default='none', choices=['standard', '01', 'none'])
     arg_parser.add_argument('--channels', nargs='+', type=str, required=False)
     arg_parser.add_argument('--augmentation', type=bool, required=False, default=True)
-    arg_parser.add_argument('--freeze', type=bool, required=False, default=False)
+    arg_parser.add_argument('--freeze', type=bool, required=False, default=True)
+    arg_parser.add_argument('--num_workers', type=int, required=False, default=0)
+    arg_parser.add_argument('--pin_memory', type=bool, required=False, default=False)
+    arg_parser.add_argument('--prefetch_factor', required=False, default=None)
+
     args = arg_parser.parse_args()
 
     main(data_path=args.data_dir,
@@ -73,7 +83,10 @@ if __name__ == '__main__':
          normalization=args.normalization,
          channels=args.channels,
          augmentation=args.augmentation, 
-         freeze=args.freeze
+         freeze=args.freeze,
+         num_workers=args.num_workers,
+         pin_memory=args.pin_memory,
+         prefetch_factor=args.prefetch_factor
          )
 
 

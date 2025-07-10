@@ -38,8 +38,8 @@ class ToothFairy3_Dataset(Dataset):
         self.path_cbct = os.path.join(self.data_directory, 'imagesTr')
         self.path_labels = os.path.join(self.data_directory, 'labelsTr')
        
-        files_cbct = os.listdir(self.path_cbct)
-        files_labels = os.listdir(self.path_labels)
+        files_cbct = sorted(os.listdir(self.path_cbct))
+        files_labels = sorted(os.listdir(self.path_labels))
          
         for file_cbct, file_label in zip(files_cbct, files_labels):
             
