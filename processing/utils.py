@@ -22,12 +22,12 @@ def remove_rings_artifacts(image: np.ndarray):  #slightly changes the image but 
     return image_without_rings
 
 
-def norm_to_0_1(image: np.ndarray):
-    return (image - image.min())/(image.max() - image.min())
+def norm_to_0_1(image: np.ndarray, min = -1000, max = 3000):
+    return (image - min)/(max - min)
 
 def norm_standard(image: np.ndarray):
     mean = image.mean()
-    standard_deviation = image.std()
+    standard_deviation = image.std() + 1e-5
     normal_image = (image - mean)/standard_deviation
 
     return normal_image

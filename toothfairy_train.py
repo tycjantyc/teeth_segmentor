@@ -11,16 +11,16 @@ import argparse
 def main(data_path = 'D:/ToothFairy3', 
          batch_size = 1, 
          min_clamp = -1000, 
-         max_clamp = 4000, 
-         compression = 'big',  #'big' - 3 classes, 'medium' - 8 classes, 'none' - 77 classes
-         normalization = 'none', #'standard', '01', 'none'
+         max_clamp = 3000, 
+         compression = 'medium',  #'big' - 3 classes, 'medium' - 8 classes, 'none' - 77 classes
+         normalization = '01', #'standard', '01', 'none'
          augmentation = True, 
-         learning_rate = 1e-2, 
-         weight_decay = 1e-5, 
+         learning_rate = 1e-3, 
+         weight_decay = 1e-6, 
          num_epochs = 10,
          lr_warmup_steps = 40,
-         freeze = False,        # for the pretrained encoder to be frozen
-         channels = ['sobel'],  # Choose from: 'sobel', 'clahe', 'median'
+         freeze = True,        # for the pretrained encoder to be frozen
+         channels = [],  # Choose from: 'sobel', 'clahe', 'median'
          validation_split = 0.05,
          num_workers = 0,
          pin_memory = False,
@@ -54,7 +54,7 @@ def main(data_path = 'D:/ToothFairy3',
         num_training_steps=(len(train_dataloader) * num_epochs),
     )
 
-    train_tooth_fairy(model, optimizer, train_dataloader, val_dataloader, lr_scheduler, num_epochs)
+    train_tooth_fairy(model, optimizer, train_dataloader, val_dataloader, lr_scheduler, num_epochs, num_classes)
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
@@ -63,8 +63,8 @@ if __name__ == '__main__':
     arg_parser.add_argument('--learning_rate', type=float, required=False, default=1e-3)
     arg_parser.add_argument('--weight_decay', type=float, required=False, default=1e-6)
     arg_parser.add_argument('--batch_size', type=int, required=False, default=1)
-    arg_parser.add_argument('--compression', type=str, required=False, default='big', choices=['big', 'medium', 'none'])
-    arg_parser.add_argument('--normalization', type=str, required=False, default='none', choices=['standard', '01', 'none'])
+    arg_parser.add_argument('--compression', type=str, required=False, default='medium_rare', choices=['big', 'medium_rare', 'medium', 'none'])
+    arg_parser.add_argument('--normalization', type=str, required=False, default='01', choices=['standard', '01', 'none'])
     arg_parser.add_argument('--channels', nargs='+', type=str, required=False)
     arg_parser.add_argument('--augmentation', type=bool, required=False, default=True)
     arg_parser.add_argument('--freeze', type=bool, required=False, default=True)

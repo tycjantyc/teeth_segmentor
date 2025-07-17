@@ -19,8 +19,11 @@ def train_loop_diffusion(model, noise_scheduler, optimizer, train_dataloader, lr
         model, optimizer, train_dataloader, lr_scheduler
     )
 
+    #model.load_state_dict(torch.load('models/weights/weights_diffusion_2d_2.pt', weights_only=True))
+
     model = model.to(DEVICE)
 
+    loss_global = 10
     global_step = 0
 
     # Now you train the model
@@ -68,3 +71,9 @@ def train_loop_diffusion(model, noise_scheduler, optimizer, train_dataloader, lr
 
         loss_full = loss_full/len(train_dataloader)
         print(f'Epoch: {epoch + 1}, Loss: {loss_full:.7f}')
+
+        if loss_full < loss_global:
+            loss_global = loss_full
+            torch.save(model.state_dict(), f'models/weights/weights_diffusion_2d_bigger_{epoch}.pt')
+
+

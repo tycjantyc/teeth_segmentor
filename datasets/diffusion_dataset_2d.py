@@ -1,7 +1,10 @@
 import os
 import numpy as np
 from torch.utils.data import Dataset
-from processing.utils import remove_rings_artifacts, load_itk, norm_standard, norm_to_0_1, crop
+from processing.utils import remove_rings_artifacts
+
+def norm_diffusion(image, min=-1000, max=3000):
+    return (image - min)/(max-min)
 
 class Diffusion_Dataset_2D(Dataset):
     
@@ -32,6 +35,6 @@ class Diffusion_Dataset_2D(Dataset):
             image = remove_rings_artifacts(image)
 
         image = image.astype(np.float32)
-        image = norm_standard(image)
+        image = norm_diffusion(image)
 
         return image

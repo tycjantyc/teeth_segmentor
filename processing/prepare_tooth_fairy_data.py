@@ -10,7 +10,8 @@ def prepare_toothfairy(image: np.ndarray,
                        compression_function, 
                        normalization_function, 
                        augmentation:bool, 
-                       channels:list):
+                       channels:list,
+                       patchify:bool = True):
     
         if remove_ct_rings:
             image = remove_rings_artifacts(image)
@@ -19,7 +20,8 @@ def prepare_toothfairy(image: np.ndarray,
 
         assert image.shape == mask.shape
 
-        image, mask = create_random_snippet(image, mask, input_size)
+        if patchify:
+            image, mask = create_random_snippet(image, mask, input_size)
 
         mask = compression_function(mask)
         image = normalization_function(image)

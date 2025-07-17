@@ -26,7 +26,7 @@ def create_random_snippet(image: np.ndarray, mask:np.ndarray, input_size: tuple[
             image = image[h_new, w_new:w_new+w1, d_new:d_new+d1]
             return image, temp_mask
 
-def create_diffusion_data(path_from:str = 'D:/ToothFairy3', path_to:str = 'data/diffusion_2d/images', resolution:tuple[int, int] = (60, 60), images_per_volume:int = 400):
+def create_diffusion_data(path_from:str = 'D:/ToothFairy3', path_to:str = '../diffusion_2d', resolution:tuple[int, int] = (60, 60), images_per_volume:int = 400):
 
     PATH = path_from + '/imagesTr'
     PATH_MASK = path_from + '/labelsTr'

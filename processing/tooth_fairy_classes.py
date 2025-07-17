@@ -121,6 +121,25 @@ def compress_tooth_fairy_classes(volume):
 
     return volume_new
 
+def bigger_compress_tooth_fairy_classes(volume):
+    """
+    Kompresja:
+    Klasa 0 - background ([0])
+    Klasa 1 - Kości szczęki górne dolne([1, 2])
+    Klasa 2 - Gardło i Jamy nosowe ([5, 6, 7])
+    Klasa 3 - Nerwy w szczęce ([3, 4, 103:105)
+    Klasa 4 - Zęby, kanały i ciała obce ([8:48],[111:148])
+    """
+    volume_new = volume.copy()  
+
+    volume_new[(volume > 0) & (volume < 3)] = 1
+    volume_new[(volume > 4) & (volume < 8)] = 2
+    volume_new[((volume > 102) & (volume < 106)) | ((volume > 2) & (volume < 5))] = 3
+    volume_new[(volume > 7) & (volume < 49)] = 4
+    volume_new[(volume > 110) & (volume < 149)] = 4
+
+    return volume_new
+
 def only_teeth_and_canal_classes(volume):
     """
     Kompresja:
@@ -143,6 +162,9 @@ def compression_factory(mode_name = 'big'):
     if mode_name == 'big':
         return only_teeth_and_canal_classes, 3
     
+    if mode_name == 'medium_rare':
+        return bigger_compress_tooth_fairy_classes, 5
+
     if mode_name == 'medium':
         return compress_tooth_fairy_classes, 8
     

@@ -9,10 +9,10 @@ from training.train_diffusion import train_loop_diffusion
 
 if __name__ == '__main__':
     
-    BATCH_SIZE = 64
+    BATCH_SIZE = 128
 
-    dataset = Diffusion_Dataset_2D()
-    train_dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4, pin_memory=False, prefetch_factor=None)
+    dataset = Diffusion_Dataset_2D(data_directory='../diffusion_2d')
+    train_dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=6, pin_memory=True, prefetch_factor=2)
 
     learning_rate = 1e-04
     weight_decay = 1e-06

@@ -7,7 +7,7 @@ import torch.nn as nn
 import numpy as np
 from monai.losses import DiceFocalLoss
 
-def train_tooth_fairy(model, optimizer, train_dataloader, val_dataloader, lr_scheduler, num_epochs):
+def train_tooth_fairy(model, optimizer, train_dataloader, val_dataloader, lr_scheduler, num_epochs, num_classes):
 
     CRITERION = DiceFocalLoss(include_background=False, sigmoid=True, lambda_dice=1.0, lambda_focal=1.0)
 
@@ -35,7 +35,7 @@ def train_tooth_fairy(model, optimizer, train_dataloader, val_dataloader, lr_sch
         #Training phase
         for step, (image, label) in enumerate(train_dataloader):
             
-            clean_label = F.one_hot(label.long(), num_classes=3)
+            clean_label = F.one_hot(label.long(), num_classes=num_classes)
             clean_label = clean_label.permute(0, 4, 1, 2, 3).float()
 
             clean_images = image
@@ -73,7 +73,7 @@ def train_tooth_fairy(model, optimizer, train_dataloader, val_dataloader, lr_sch
         #Validation phase
         for step, (image, label) in enumerate(val_dataloader):
             
-            clean_label = F.one_hot(label.long(), num_classes=3)
+            clean_label = F.one_hot(label.long(), num_classes=num_classes)
             clean_label = clean_label.permute(0, 4, 1, 2, 3).float()
 
             clean_images = image
@@ -101,4 +101,6 @@ def train_tooth_fairy(model, optimizer, train_dataloader, val_dataloader, lr_sch
             loss_val_full = loss_val_full/len(val_dataloader)
             print(f'Epoch: {epoch + 1}, Validation Loss: {loss_val_full:.7f}')
 
-
+        
+        tc.save(model.state_dict(), f'models/weights/tooth_fairy_3d_{epoch}.pt')
+        print("Weights saved!")

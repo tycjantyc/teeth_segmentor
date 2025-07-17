@@ -12,3 +12,4 @@ opencv-python
 scikit-image
 torchviz 
 graphviz
+torchinfo

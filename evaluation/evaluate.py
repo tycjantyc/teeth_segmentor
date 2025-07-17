@@ -27,14 +27,16 @@ def evaluate(model:nn.Module,
              num_classes:int = 3,  
              return_binary:bool = False,
              remove_ct_rings:bool = False, 
-             compression_function:function = only_teeth_and_canal_classes,
-             normalization_function:function = norm_to_0_1, 
+             compression_function = only_teeth_and_canal_classes,
+             normalization_function = norm_to_0_1, 
              channels:list = []):
     
     volume = load_itk(file)
-    volume, _ = prepare_toothfairy(volume, None, remove_ct_rings=remove_ct_rings, input_size=volume.shape, compression_function=compression_function, normalization_function=normalization_function, augmentation=False, channels=channels)
+    volume, _ = prepare_toothfairy(volume, volume.copy(), remove_ct_rings=remove_ct_rings, input_size=volume.shape, compression_function=compression_function, normalization_function=normalization_function, augmentation=False, channels=channels, patchify=False)
+    volume = volume[0]
 
     model = model.cuda()
+    
 
     h, w, d = model_input_shape
 
