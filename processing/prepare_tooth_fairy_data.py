@@ -6,8 +6,7 @@ from processing.multi_input import MultiInputFactory
 def prepare_toothfairy(image: np.ndarray, 
                        mask: np.ndarray, 
                        remove_ct_rings:bool, 
-                       input_size: tuple[int, int, int], 
-                       compression_function, 
+                       input_size: tuple[int, int, int],  
                        normalization_function, 
                        augmentation:bool, 
                        channels:list,
@@ -23,7 +22,6 @@ def prepare_toothfairy(image: np.ndarray,
         if patchify:
             image, mask = create_random_snippet(image, mask, input_size)
 
-        mask = compression_function(mask)
         image = normalization_function(image)
 
         if augmentation:

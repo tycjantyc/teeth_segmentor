@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from torch.utils.data import Dataset
-from processing.utils import load_itk, norm_to_0_1
+from processing.utils import load_itk, norm_to_0_1, crop_to_mask
 from processing.tooth_fairy_classes import fix_tooth_fairy_classes
 from processing.prepare_tooth_fairy_data import prepare_toothfairy
 
@@ -69,10 +69,14 @@ class ToothFairy3_Dataset(Dataset):
         image = load_itk(path_cbct, clamp = self.clamp)
         mask = load_itk(path_label)
 
+        mask = self.compression_function(mask)
+
+        image, mask = crop_to_mask(image, mask, padding=5)
+
         assert image.shape == mask.shape
 
         image = self.normalization(image)
-        image, mask = prepare_toothfairy(image, mask, self.remove_ct_rings, self.input_size, self.compression_function, self.normalization, self.augmentation, self.channels)
+        image, mask = prepare_toothfairy(image, mask, self.remove_ct_rings, self.input_size, self.normalization, self.augmentation, self.channels)
 
         return image, mask
     

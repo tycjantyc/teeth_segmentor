@@ -60,7 +60,7 @@ if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--data_dir', type=str, required=False, default='D:/ToothFairy3')
     arg_parser.add_argument('--num_epochs', type=int, required=False, default=10)
-    arg_parser.add_argument('--learning_rate', type=float, required=False, default=1e-3)
+    arg_parser.add_argument('--learning_rate', type=float, required=False, default=1e-4)
     arg_parser.add_argument('--weight_decay', type=float, required=False, default=1e-6)
     arg_parser.add_argument('--batch_size', type=int, required=False, default=1)
     arg_parser.add_argument('--compression', type=str, required=False, default='medium_rare', choices=['big', 'medium_rare', 'medium', 'none'])

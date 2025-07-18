@@ -62,6 +62,33 @@ def crop(image: np.ndarray, new_dims: list[int, int, int]):
 
     return image[x1:y1, x2:y2, x3:y3]
 
+
+def crop_to_mask(volume:  np.ndarray, mask: np.ndarray, padding=2):
+    # Find bounding box of non-zero mask
+    coords = np.array(np.nonzero(mask))
+
+    if coords.sum() == 0:
+         return volume, mask
+
+    zmin, ymin, xmin = coords.min(axis=1)
+    zmax, ymax, xmax = coords.max(axis=1)
+
+    # Apply padding
+    zmin = max(zmin - padding, 0)
+    ymin = max(ymin - padding, 0)
+    xmin = max(xmin - padding, 0)
+
+    zmax = min(zmax + padding + 1, volume.shape[0])
+    ymax = min(ymax + padding + 1, volume.shape[1])
+    xmax = min(xmax + padding + 1, volume.shape[2])
+
+    # Crop
+    cropped_volume = volume[zmin:zmax, ymin:ymax, xmin:xmax]
+    cropped_mask = mask[zmin:zmax, ymin:ymax, xmin:xmax]
+
+    return cropped_volume, cropped_mask
+
+
 def create_random_snippet(image: np.ndarray, mask:np.ndarray, input_size: tuple[int, int, int]):
         h, w, d = image.shape
         h1, w1, d1 = input_size
