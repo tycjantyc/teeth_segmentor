@@ -14,7 +14,7 @@ def train_tooth_fairy(model, optimizer, train_dataloader, val_dataloader, lr_sch
     DEVICE = 'cuda:0'
 
     accelerator = Accelerator(
-        mixed_precision='fp16',
+        mixed_precision='no',
         gradient_accumulation_steps=1
     )
 
